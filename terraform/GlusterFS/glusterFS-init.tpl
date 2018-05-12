@@ -16,4 +16,3 @@ bootcmd:
 runcmd:
     - [ yum, install, -y, "glusterfs{-fuse,-server}" ]
     - [ chkconfig, glusterd, on ]
-    - [ ]

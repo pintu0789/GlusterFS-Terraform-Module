@@ -8,4 +8,7 @@ variable "subnets" {
   description = "List of CIDR Block Notation for placement subnets."
 }
 
-variable "vpc" {}
+variable "vpc" {
+  type        = "string"
+  description = "VPC reference"
+}

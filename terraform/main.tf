@@ -8,6 +8,6 @@ resource "aws_vpc" "main" {
 
 module "GlusterFS" {
   source  = "./GlusterFS/"
-  subnets = []
+  subnets = ["10.0.0.0/24", "10.0.0.1/24"]
   vpc     = "${aws_vpc.main.id}"
 }

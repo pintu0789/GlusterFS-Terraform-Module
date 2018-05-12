@@ -12,9 +12,9 @@ resource "aws_autoscaling_group" "glusterFS" {
   desired_capacity          = 3
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  aws_placement_group       = "${aws_placement_group.glusterFS.id}"
-  launch_conffiguration     = "${aws_launch_configuration.glusterFS_as_conf.id}"
-  vpc_zone_identifier       = "${aws_subnet.main.*}"
+  placement_group           = "${aws_placement_group.glusterFS.id}"
+  launch_configuration      = "${aws_launch_configuration.glusterFS_as_conf.id}"
+  vpc_zone_identifier       = "${aws_subnet.main.all_subnets}"
 }
 
 data "aws_ami" "aws_linux" {
@@ -47,9 +47,19 @@ resource "aws_launch_configuration" "glusterFS_as_conf" {
   user_data     = "${data.template_file.init.rendered}"
 }
 
+//I hate this bug https://github.com/hashicorp/terraform/issues/12570
+//Need to create local varialbe instance for count to be computed properly
+locals {
+  subnet_count = "${length(var.subnets)}"
+}
+
 resource "aws_subnet" "main" {
   //create a subnet for each subnet passed as argument
-  count      = "${length(split(",",var.subnets))}"
+  count      = "${local.subnet_count}"
   vpc_id     = "${var.vpc}"
-  cidr_block = "${var.subnets[count.index]}"
+  cidr_block = "${element(var.subnets, count.index)}"
+
+  output "all_subnets" {
+    value = "${aws_subnet.main.*.id}"
+  }
 }
