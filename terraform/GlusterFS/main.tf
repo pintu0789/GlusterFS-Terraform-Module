@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "glusterFS" {
   health_check_type         = "ELB"
   placement_group           = "${aws_placement_group.glusterFS.id}"
   launch_configuration      = "${aws_launch_configuration.glusterFS_as_conf.id}"
-  vpc_zone_identifier       = "${aws_subnet.main.all_subnets}"
+  vpc_zone_identifier       = ["${aws_subnet.main.*.id}"]
 }
 
 data "aws_ami" "aws_linux" {
@@ -59,7 +59,8 @@ resource "aws_subnet" "main" {
   vpc_id     = "${var.vpc}"
   cidr_block = "${element(var.subnets, count.index)}"
 
+  /*
   output "all_subnets" {
     value = "${aws_subnet.main.*.id}"
-  }
+  }*/
 }

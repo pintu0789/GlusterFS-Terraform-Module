@@ -1,2 +1,3 @@
 deploy.sh
 terraform/.terraform
+terraform/terraform.*
